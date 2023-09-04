@@ -4,8 +4,9 @@ class Node:
         self.Neighbours = []
 
 class Graph:
-    def __init__(self):
+    def __init__(self, biDirectional = False):
         self.Nodes = []
+        self.BiDirectional = biDirectional
 
     def AddNode(self, data):
         newNode = Node(data)
@@ -14,3 +15,5 @@ class Graph:
 
     def AddEdge(self, startNode, endNode):
         startNode.Neighbours.append(endNode)
+        if self.BiDirectional:
+            endNode.Neighbours.append(startNode)
