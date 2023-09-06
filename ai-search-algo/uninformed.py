@@ -1,5 +1,6 @@
 from graph import Graph, Node
 from collections import deque
+import heapq
 
 class Breadth_First:
     def __init__(self, graph=None):
@@ -104,6 +105,15 @@ class Depth_First:
         visited = set()
         self._dfs_recursive_limit(startNode, visited, depthLimit, startDepth, searchValue)
 
+    def SearchIterativeDeepening(self, startNode, searchValue):
+        maxDepth = 0
+        while True:
+            visited = set()
+            result = self._iddfs_recursive(startNode, visited, maxDepth, searchValue)
+            if result is not None:
+                return result
+            maxDepth += 1
+
     def _dfs_recursive(self, currentNode, visited, searchValue=None):
         if currentNode not in visited:
             if searchValue is None:
@@ -116,7 +126,7 @@ class Depth_First:
 
     def _dfs_recursive_limit(self, currentNode, visited, depthLimit, currentLimit=0, searchValue=None):
         if currentLimit > depthLimit:
-            return
+            return None
         if currentNode not in visited:
             if searchValue is None:
                 print("Node: {nodeName} - Value: {nodeValue}".format(nodeName=self.Graph.Nodes.index(currentNode), nodeValue=currentNode.Data))
@@ -126,3 +136,75 @@ class Depth_First:
             for neighbour in currentNode.Neighbours:
                 self._dfs_recursive(neighbour, visited, depthLimit, currentLimit + 1, searchValue)
 
+    def _iddfs_recursive(self, currentNode, visited, depthLimit, searchValue):
+        if depthLimit == 0:
+            if currentNode.Data == searchValue:
+                return (currentNode, visited)
+            else:
+                return None
+        if currentNode not in visited:
+            visited.add(currentNode)
+            for neighbour in currentNode.Neighbours:
+                result = self._iddfs_recursive(neighbour, visited, depthLimit - 1, searchValue)
+                if result is not None:
+                    return result
+        # Goal node not found within depth limit
+        return None
+
+class Uniform_Cost:
+    def __init__(self, graph):
+        self.Graph = graph
+
+    def Search(self, startNode, searchValue):
+        goalNodes = self._find_node_by_data(searchValue)
+        if len(goalNodes) == 0:
+            return None
+        visited = set()
+        frontier = [(0, startNode)]
+        result = []
+        for goalNode in goalNodes:
+            found = False
+            while frontier:
+                cost, currentNode = heapq.heappop(frontier)
+                if currentNode == goalNode:
+                    found = True
+                    path = self._construct_path(startNode, goalNode)
+                    totalCost = 0
+                    for node in path:
+                        totalCost += node.Cost
+                    result.append((path, totalCost))
+                    break
+                visited.add(currentNode)
+                for neighbor in currentNode.Neighbours:
+                    if neighbor not in visited:
+                        newCost = cost + neighbor.Cost
+                        heapq.heappush(frontier, (newCost, neighbor))
+            if found == False:  # Path not found
+                result.append(([], float('inf')))
+        result = sorted(result, key=lambda tup: tup[1])
+        if len(result[0][0]) > 0:
+            return result[0]
+        return None
+
+    def _find_node_by_data(self, data):
+        result = []
+        for node in self.Graph.Nodes:
+            if node.Data == data:
+                result.append(node)
+        return result
+    def _construct_path(self, startNode, goalNode):
+        path = []
+        currentNode = goalNode
+        while currentNode != startNode:
+            path.insert(0, currentNode)
+            currentNode = self._find_lowest_cost_neighbor(currentNode)
+        path.insert(0, startNode)
+        return path
+    def _find_lowest_cost_neighbor(self, node):
+        lowestCost = float('inf')
+        lowestCostNeighbour = None
+        for neighbour in node.Neighbours:
+            if neighbour.Cost < lowestCost:
+                lowestCost = neighbour.Cost
+                lowestCostNeighbour = neighbour
+        return lowestCostNeighbour
