@@ -81,4 +81,28 @@ class Bidirectional:
                             return visitedGoal.union(visitedStart);
             return set()
 
+class Depth_First:
+    def __init__(self, graph=None):
+        self.Graph = graph
+
+    def ChangeGraph(self, newGraph):
+        self.Graph = newGraph
+
+    def Represent(self, startNode):
+        visited = set()
+        self._dfs_recursive(startNode, visited)
+
+    def Search(self, startNode, searchValue):
+        visited = set()
+        self._dfs_recursive(startNode, visited, searchValue)
+
+    def _dfs_recursive(self, currentNode, visited, searchValue=None):
+        if currentNode not in visited:
+            if searchValue is None:
+                print("Node: {nodeName} - Value: {nodeValue}".format(nodeName=self.Graph.Nodes.index(currentNode), nodeValue=currentNode.Data))
+            if searchValue is not None and currentNode.Data == searchValue:
+                return (currentNode, visited)
+            visited.add(currentNode)
+            for neighbour in currentNode.Neighbours:
+                self._dfs_recursive(neighbour, visited)
 
