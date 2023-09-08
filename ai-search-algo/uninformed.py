@@ -175,10 +175,10 @@ class Uniform_Cost:
                     result.append((path, totalCost))
                     break
                 visited.add(currentNode)
-                for neighbor in currentNode.Neighbours:
-                    if neighbor not in visited:
-                        newCost = cost + neighbor.Cost
-                        heapq.heappush(frontier, (newCost, neighbor))
+                for neighbour in currentNode.Neighbours:
+                    if neighbour not in visited:
+                        newCost = cost + neighbour.Cost
+                        heapq.heappush(frontier, (newCost, neighbour))
             if found == False:  # Path not found
                 result.append(([], float('inf')))
         result = sorted(result, key=lambda tup: tup[1])
