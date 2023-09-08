@@ -44,3 +44,15 @@ class Greedy_Best_First:
     # def _find_best_neighbour(self, node, goalNode):
     #     return min(node.Neighbours, key=lambda neighbor: self.Heuristic(neighbor, goalNode))
 
+class Astar:
+    def __init__(self, graph, heuristic):
+        self.Graph = graph
+        self.Heuristic = heuristic
+
+    def Search(self, startNode, searchValue):
+        if startNode is None:
+            return (None, [])
+        frontier = [(self.Heuristic(startNode, searchValue), [startNode])]
+        visited = set()
+        while frontier:
+            costHeurValue, currentPath = heapq.heappop(frontier)
