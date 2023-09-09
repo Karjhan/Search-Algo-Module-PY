@@ -32,18 +32,6 @@ class Greedy_Best_First:
                 return node
         return None
 
-    # def _construct_path(self, startNode, goalNode):
-    #     path = []
-    #     currentNode = goalNode
-    #     while currentNode != startNode:
-    #         path.insert(0, currentNode)
-    #         currentNode = self._find_best_neighbor(currentNode, goalNode)
-    #     path.insert(0, startNode)
-    #     return path
-    #
-    # def _find_best_neighbour(self, node, goalNode):
-    #     return min(node.Neighbours, key=lambda neighbor: self.Heuristic(neighbor, goalNode))
-
 class Astar:
     def __init__(self, graph, heuristic):
         self.Graph = graph
@@ -56,3 +44,11 @@ class Astar:
         visited = set()
         while frontier:
             costHeurValue, currentPath = heapq.heappop(frontier)
+            if currentPath[-1].Data == searchValue:
+                return (currentPath[-1], currentPath)
+            visited.add(currentPath[-1])
+            for neighbour in currentPath[-1].Neighbours:
+                if neighbour not in visited:
+                    newPath = currentPath + [neighbour]
+                    newPathCost = sum(map(lambda x:x.Cost, newPath)) + self.Heuristic(neighbour, searchValue)
+                    heapq.heappush(frontier, (newPathCost, newPath))
