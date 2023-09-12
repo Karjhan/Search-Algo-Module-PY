@@ -6,6 +6,9 @@ class Greedy_Best_First:
         self.Graph = graph
         self.Heuristic = heuristic
 
+    def ChangeGraph(self, newGraph):
+        self.Graph = newGraph
+
     def Search(self, startNode, searchValue):
         goalNode = self._find_node_by_data(searchValue)
         if startNode is None or goalNode is None:
@@ -36,6 +39,9 @@ class Astar:
     def __init__(self, graph, heuristic):
         self.Graph = graph
         self.Heuristic = heuristic
+
+    def ChangeGraph(self, newGraph):
+        self.Graph = newGraph
 
     def Search(self, startNode, searchValue):
         if startNode is None:

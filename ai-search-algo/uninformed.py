@@ -155,6 +155,9 @@ class Uniform_Cost:
     def __init__(self, graph):
         self.Graph = graph
 
+    def ChangeGraph(self, newGraph):
+        self.Graph = newGraph
+
     def Search(self, startNode, searchValue):
         goalNodes = self._find_node_by_data(searchValue)
         if len(goalNodes) == 0:
