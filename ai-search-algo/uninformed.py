@@ -10,31 +10,31 @@ class Breadth_First:
         self.Graph = newGraph
 
     def Represent(self, startingNode):
-        visited = set()
+        visited = []
         queue = deque()
         queue.append(startingNode)
-        visited.add(startingNode)
+        visited.append(startingNode)
         while(queue):
             currentNode = queue.popleft()
             print("Node: {nodeName} - Value: {nodeValue}".format(nodeName=self.Graph.Nodes.index(currentNode), nodeValue=currentNode.Data))
             for neighbour in currentNode.Neighbours:
                 if neighbour not in visited:
                     queue.append(neighbour)
-                    visited.add(neighbour)
+                    visited.append(neighbour)
 
     def Search(self, startingNode, value):
-        visited = set()
+        visited = []
         queue = deque()
         queue.append(startingNode)
-        visited.add(startingNode)
+        visited.append(startingNode)
         while (queue):
             currentNode = queue.popleft()
             if currentNode.Data == value:
-                return (currentNode, visited)
+                return visited
             for neighbour in currentNode.Neighbours:
                 if neighbour not in visited:
                     queue.append(neighbour)
-                    visited.add(neighbour)
+                    visited.append(neighbour)
 
 class Bidirectional:
     def __init__(self, graph = None, mode1 = "BFS", mode2 = "BFS"):
@@ -90,25 +90,27 @@ class Depth_First:
         self.Graph = newGraph
 
     def Represent(self, startNode):
-        visited = set()
+        visited = []
         self._dfs_recursive(startNode, visited)
 
     def Search(self, startNode, searchValue):
-        visited = set()
+        visited = []
         self._dfs_recursive(startNode, visited, searchValue)
+        return visited
 
     def RepresentDepthLimit(self, startNode, depthLimit, startDepth = 0):
-        visited = set()
+        visited = []
         self._dfs_recursive_limit(startNode, visited, depthLimit, startDepth)
 
     def SearchDepthLimit(self, startNode, searchValue, depthLimit, startDepth):
-        visited = set()
+        visited = []
         self._dfs_recursive_limit(startNode, visited, depthLimit, startDepth, searchValue)
+        return visited
 
     def SearchIterativeDeepening(self, startNode, searchValue):
         maxDepth = 0
         while True:
-            visited = set()
+            visited = []
             result = self._iddfs_recursive(startNode, visited, maxDepth, searchValue)
             if result is not None:
                 return result
@@ -119,10 +121,14 @@ class Depth_First:
             if searchValue is None:
                 print("Node: {nodeName} - Value: {nodeValue}".format(nodeName=self.Graph.Nodes.index(currentNode), nodeValue=currentNode.Data))
             if searchValue is not None and currentNode.Data == searchValue:
+                visited.append(currentNode)
                 return (currentNode, visited)
-            visited.add(currentNode)
+            visited.append(currentNode)
             for neighbour in currentNode.Neighbours:
-                self._dfs_recursive(neighbour, visited, searchValue)
+                if searchValue in map(lambda x:x.Data, visited):
+                    break
+                else:
+                    self._dfs_recursive(neighbour, visited, searchValue)
 
     def _dfs_recursive_limit(self, currentNode, visited, depthLimit, currentLimit=0, searchValue=None):
         if currentLimit > depthLimit:
@@ -131,10 +137,14 @@ class Depth_First:
             if searchValue is None:
                 print("Node: {nodeName} - Value: {nodeValue}".format(nodeName=self.Graph.Nodes.index(currentNode), nodeValue=currentNode.Data))
             if searchValue is not None and currentNode.Data == searchValue:
+                visited.append(currentNode)
                 return (currentNode, visited)
-            visited.add(currentNode)
+            visited.append(currentNode)
             for neighbour in currentNode.Neighbours:
-                self._dfs_recursive(neighbour, visited, depthLimit, currentLimit + 1, searchValue)
+                if searchValue in map(lambda x:x.Data, visited):
+                    break
+                else:
+                    self._dfs_recursive(neighbour, visited, depthLimit, currentLimit + 1, searchValue)
 
     def _iddfs_recursive(self, currentNode, visited, depthLimit, searchValue):
         if depthLimit == 0:
@@ -143,9 +153,12 @@ class Depth_First:
             else:
                 return None
         if currentNode not in visited:
-            visited.add(currentNode)
+            visited.append(currentNode)
             for neighbour in currentNode.Neighbours:
-                result = self._iddfs_recursive(neighbour, visited, depthLimit - 1, searchValue)
+                if searchValue in map(lambda x:x.Data, visited):
+                    break
+                else:
+                    result = self._iddfs_recursive(neighbour, visited, depthLimit - 1, searchValue)
                 if result is not None:
                     return result
         # Goal node not found within depth limit
