@@ -49,10 +49,15 @@ conda deactivate *yourEnvironmentName*
 ## Visuals
 
 ### Test Graph
+![SSTestGraph](screenshots%2FSSTestGraph.png)
 
 ### Depth First Search
+![SSDepthFirstInput](screenshots%2FSSDepthFirstInput.png)
+![SSDepthFirstResult](screenshots%2FSSDepthFirstResult.png)
 
 ### Breadth First Search
+![SSBreadthFirstInput](screenshots%2FSSBreadthFirstInput.png)
+![SSBreadthFirstResult](screenshots%2FSSBreadthFirstResult.png)
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
